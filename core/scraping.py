@@ -67,7 +67,11 @@ class StockDataScraper:
         print(f"Scraping {interval} data for {len(self.tickers)} tickers")
         if not os.path.exists(f"./data/{interval}"):
             os.makedirs(f"./data/{interval}")
+        
         for ticker in tqdm(self.tickers):
+            if os.path.exists(f"./data/{interval}/{ticker}.csv"):
+                print(f"Skipping {ticker} as it already exists")
+                continue
             df = self.scrape_historical_data(ticker, period=period, interval=interval)
             if df is not None:
                 df.to_csv(f"./data/{interval}/{ticker}.csv")

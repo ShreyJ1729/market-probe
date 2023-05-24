@@ -85,3 +85,5 @@ steps from here
 2. work on backtesting framework
 
 https://pypi.org/project/yfinance/ --> info on using requests with headers to get around rate limiting
+
+stock2vec --> cluster stocks by true correlation in price changes, rather than industry and semantics.
