@@ -87,3 +87,37 @@ steps from here
 https://pypi.org/project/yfinance/ --> info on using requests with headers to get around rate limiting
 
 stock2vec --> cluster stocks by true correlation in price changes, rather than industry and semantics.
+
+todo
+
+- iterate over top 100 most volatile, highest volume stocks (or some other list)
+- - for each compute charts
+- - - 1m
+- - - 5m
+- - - 15m
+- - - 30m
+- - - 1h
+- - - 4h
+- - - 1d
+- for each chart compute indicators and run different strategied
+- - SR Breaks + SQZM + SMA200 --> use this to find events
+- - MACD + MFI + WT --> use this to confirm events
+
+create a "game" where a random stocks is picked, a random timeframe is picked, and 60-100 tickers are shown, goal is to guess what the price movement will be 10-20 tickers down the line.
+
+another way is to compute 100s of indicators, for lines put crossover booleans, and set the target for each day as up if the next 10 candlestick SMA is above the current price, and down if it's below. then train an RF to do this. yt video: https://www.youtube.com/watch?v=iJmteST6fP8
+
+another idea is to monitor changes in stock prices post-earnings, see who's the most volatile, and run a strategy buynig straddles 2-3 weeks prior to earnings for those stocks. backtest and everything etc.
+--> also make sure there's enough liquidity for this, and that the options are not too expensive
+A YouTuber by the name Benjamin just released a study on this, in his latest video. His backtests show it’s better to sell strangles, and to focus on stocks whose implied move is greater than their historical move.
+
+- could also be interesting to see if selling right before earnings is the move
+- https://www.youtube.com/channel/UCkcnYVAVZQOB-nXHechtXDg
+
+paper around earnings straddles: https://papers.ssrn.com/sol3/Papers.cfm?abstract_id=2204549
+
+short strangle buy when IV is abnormally high, run some backtests on this
+IT IS ALL PRICED IN. The option markets are efficient, if you buy the contracts well before earnings you have to deal with theta and IV crush. If you buy the contracts right before earnings you have IV crush, making them about the same. In order to get 20-40% moves in your straddle you must buy relatively short dated contracts and the underlying asset (a stock) must move more than anticipated. Contracts that are longer dated will not move as much on earnings and if the underlying asset does not move much the contracts will be IV crushed.
+
+calculate hurst exponent for different stocks, then trade only those with exponents close to 0/1, since those follow mean reversion and trend following strategies respectively.
+if hurst exponent in increasing in a sliding window.
