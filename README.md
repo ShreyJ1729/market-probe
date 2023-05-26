@@ -121,3 +121,5 @@ IT IS ALL PRICED IN. The option markets are efficient, if you buy the contracts 
 
 calculate hurst exponent for different stocks, then trade only those with exponents close to 0/1, since those follow mean reversion and trend following strategies respectively.
 if hurst exponent in increasing in a sliding window.
+
+also todo make a UI where you can pick a stock and it shows buy signals across granularities, and you have a sensitivity slider.
