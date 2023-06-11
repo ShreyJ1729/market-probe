@@ -50,6 +50,14 @@ train an RF row by row:
 
 alternatively train on all data, then forward test as test data for lower granularities (1m - 1h)
 
+#### Stock2Vec
+
+Measure price correlations in stocks over time, if one ticker goes up, what other tickers generally simultaneously went up with it? Then generate clusters of these vectors for true asset diversification.
+
+- could be done by add a diff col to each row as close - open, and looking at correlations between these values between tickers at the same datetimes. (basically it's one big correlation coefficient problem between all tickers.) Can even do sliding window to see how these correlations change over time.
+
+Another approach could be looking at these correlations but also adding in a temporal sequence. e.x. if stock X went up today what generally happens to stock B tomorrow? Less likely to see meaningful correlations here, but could be interesting to see.
+
 ## Misc Notes
 
 - SMP-500, daily insights for swing traders on the top 500 large cap US stocks.
