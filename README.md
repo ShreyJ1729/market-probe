@@ -1,5 +1,55 @@
 # SMP-500: Daily insights for swing traders on the top 500 large-cap US stocks
 
+## Technical Overview
+
+### Stock Data Scraper
+
+For a certain list of tickers (probably nasdaq-100 or sp-500 list):
+
+Initial scrape - get (1m, 5m, 15m, 30m, 1h, 1d) data for last 10 years (729 days for 1h; 30 days for 1m)
+
+at EOD (5-10 mins after market closes that day) scrape data from yfinance for each ticker for (1m, 5m, 15m, 30m, 1h, 1d) for that day, and append it to the existing data. Zip and republish to kaggle once done for storage. To keep storage low, have a different process for each granularity that all pull from/write to a shared volume on modal. One process calls upon all of them in parallel, and once everything done, it zips and uploads to kaggle.
+
+### Technical Analysis
+
+#### Indicator Framework
+
+Use df-ta whenever possible, use custom functions for:
+
+- S/R breaks (done)
+- squeeze momentum indicator (done)
+- Vix Fix (market bottoms)
+- Wave Trend Oscillator (WT)
+- maybe also take top 25 indicators on trading and convert to python (chatGPT?)
+
+Few different strategies
+
+- Squeeze Momentum + S/R breaks + 200 MA trend confirmation
+- Vix Fix + WT + 200 MA trend confirmation
+- ...
+
+#### Random Forest Model
+
+Other way is to run every indicator and train RF model, then using feature importances eliminate unnecessary ones
+For target, run the following simulation:
+
+- to find target for date/time X, simulate opening a position at datetime X.
+  default k=5%, R=2
+- set stoploss as k% above/below the price at datetime X, with r/r ratio of R (both parameters to be tuned)
+- run a simulation of holding that stock until it crosses stoploss or crosses takeprofit.
+- if stoploss crossed for only one strat, use the other one as target, with a markdown of magnitude by how much it went into stoploss territory. if both crossed, then that datetime = no buy. think of like regression -1 --> 1. if both crossed, then 0. if only one crossed, then 1 or -1 depending on which one crossed, with an optional markdown of how much it went into stoploss territory.
+
+train an RF row by row:
+
+- one for each stock, with one contigous temporal sequence as test data (backtest)
+- - one for each granularity
+- - one across all granularities
+- one for all stocks
+- - test data as set of all time of some stocks
+- - test data as some set-aside temporal sequence of stocks used to train
+
+alternatively train on all data, then forward test as test data for lower granularities (1m - 1h)
+
 ## Misc Notes
 
 - SMP-500, daily insights for swing traders on the top 500 large cap US stocks.
@@ -123,3 +173,7 @@ calculate hurst exponent for different stocks, then trade only those with expone
 if hurst exponent in increasing in a sliding window.
 
 also todo make a UI where you can pick a stock and it shows buy signals across granularities, and you have a sensitivity slider.
+
+another technique, ceck out top rated stocks on seeking alpha, scrape top 10-20 every day, buy if new appears, sell if one dissappears, buy if ranking goes up, sell if ranking goes down.
+
+use ylivetikcer socket method to get intraday data at very high granulairty (like 15-30 seconds), run on modal using cron jobs and resample to 1m, 5m, 15m, 30m, etc. publish at EOD every day to kaggle.
